@@ -218,6 +218,9 @@ class DualDDetect(nn.Module):
         self.dfl2 = DFL(self.reg_max)
 
     def forward(self, x):
+        if self.export:
+            return self.forward_export(x)
+
         shape = x[0].shape  # BCHW
         d1 = []
         d2 = []
@@ -235,7 +238,7 @@ class DualDDetect(nn.Module):
         box2, cls2 = torch.cat([di.view(shape[0], self.no, -1) for di in d2], 2).split((self.reg_max * 4, self.nc), 1)
         dbox2 = dist2bbox(self.dfl2(box2), self.anchors.unsqueeze(0), xywh=True, dim=1) * self.strides
         y = [torch.cat((dbox, cls.sigmoid()), 1), torch.cat((dbox2, cls2.sigmoid()), 1)]
-        return y if self.export else (y, [d1, d2])
+        return y[0] if self.export else (y, [d1, d2])
         #y = torch.cat((dbox2, cls2.sigmoid()), 1)
         #return y if self.export else (y, d2)
         #y1 = torch.cat((dbox, cls.sigmoid()), 1)
@@ -254,6 +257,15 @@ class DualDDetect(nn.Module):
         for a, b, s in zip(m.cv4, m.cv5, m.stride):  # from
             a[-1].bias.data[:] = 1.0  # box
             b[-1].bias.data[:m.nc] = math.log(5 / m.nc / (640 / s) ** 2)  # cls (5 objects and 80 classes per 640 image)
+
+    def forward_export(self, x):
+        results = []
+        for i in range(self.nl):
+            dfl = self.cv2[i](x[i]).permute(0, 2, 3, 1).contiguous()
+            cls = self.cv3[i](x[i]).permute(0, 2, 3, 1).contiguous()
+            results.append(cls)
+            results.append(dfl)
+        return tuple(results)
 
 
 class TripleDetect(nn.Module):
