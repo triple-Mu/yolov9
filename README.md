@@ -1,6 +1,6 @@
 # YOLOv9
 
-Implementation of paper - [YOLOv9: Learning What You Want to Learn Using Programmable Gradient Information]()
+Implementation of paper - [YOLOv9: Learning What You Want to Learn Using Programmable Gradient Information](https://arxiv.org/abs/2402.13616)
 
 <div align="center">
     <a href="./">
@@ -21,6 +21,20 @@ MS COCO
 | [**YOLOv9-E**](https://github.com/WongKinYiu/yolov9/releases/download/v0.1/yolov9-e.pt) | 640 | **55.6%** | **72.8%** | **60.6%** | **58.1M** | **192.5G** |
 
 <!-- small and medium models will be released after the paper be accepted and published. -->
+
+## Useful Links
+
+<details><summary> <b>Expand</b> </summary>
+    
+ONNX export: https://github.com/WongKinYiu/yolov9/issues/2#issuecomment-1960519506
+
+TensorRT inference: https://github.com/WongKinYiu/yolov9/issues/34#issue-2150393690
+
+CoLab demo: https://github.com/WongKinYiu/yolov9/pull/18
+
+ONNXSlim export: https://github.com/WongKinYiu/yolov9/pull/37
+
+</details>
 
 
 ## Installation
@@ -118,7 +132,7 @@ Under construction.
 @article{wang2024yolov9,
   title={{YOLOv9}: Learning What You Want to Learn Using Programmable Gradient Information},
   author={Wang, Chien-Yao  and Liao, Hong-Yuan Mark},
-  booktitle={arXiv preprint},
+  booktitle={arXiv preprint arXiv:2402.13616},
   year={2024}
 }
 ```
