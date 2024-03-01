@@ -5,6 +5,8 @@ import sys
 from copy import deepcopy
 from pathlib import Path
 
+import torch
+
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[1]  # YOLO root directory
 if str(ROOT) not in sys.path:
@@ -263,8 +265,8 @@ class DualDDetect(nn.Module):
         for i in range(self.nl):
             dfl = self.cv2[i](x[i]).permute(0, 2, 3, 1).contiguous()
             cls = self.cv3[i](x[i]).permute(0, 2, 3, 1).contiguous()
-            results.append(cls)
-            results.append(dfl)
+            cls = cls.sigmoid()
+            results.append(torch.cat([cls, dfl], dim=-1))
         return tuple(results)
 
 
