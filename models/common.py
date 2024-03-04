@@ -644,14 +644,9 @@ class CBFuse(nn.Module):
         self.idx = idx
 
     def forward(self, xs):
-        b, c, *target_size = xs[-1].shape
-
+        target_size = xs[-1].shape[2:]
         res = [F.interpolate(x[self.idx[i]], size=target_size, mode='nearest') for i, x in enumerate(xs[:-1])]
-        # out = torch.sum(torch.stack(res + xs[-1:]), dim=0)
-        res = res + xs[-1:]
-        res = torch.cat(res, dim=1).reshape(b, len(res), -1, target_size[0] * target_size[1])
-        res = torch.sum(res, dim=1)
-        out = res.reshape(b, c, *target_size)
+        out = torch.sum(torch.stack(res + xs[-1:], dim=1), dim=1)
         return out
 
 #################
